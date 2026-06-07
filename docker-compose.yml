@@ -1,0 +1,30 @@
+name: agentic-rag
+
+services:
+  api:
+    build: .
+    container_name: agentic-rag-api
+    command: uvicorn agentic_rag.api.main:app --host 0.0.0.0 --port 8000
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env
+    volumes:
+      - ./data:/app/data
+      - ./.chroma:/app/.chroma
+    restart: unless-stopped
+
+  ui:
+    build: .
+    container_name: agentic-rag-ui
+    command: streamlit run src/agentic_rag/ui/app.py --server.address 0.0.0.0 --server.port 8501
+    ports:
+      - "8501:8501"
+    env_file:
+      - .env
+    volumes:
+      - ./data:/app/data
+      - ./.chroma:/app/.chroma
+    depends_on:
+      - api
+    restart: unless-stopped

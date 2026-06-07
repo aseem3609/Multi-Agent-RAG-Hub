@@ -1,0 +1,35 @@
+# CrewAI task definitions for the Agentic RAG system.
+# The orchestrator pairs these with the agents in agents.yaml.
+
+route_task:
+  description: >
+    Analyse the user question: "{question}".
+    Decide the best route among: vectorstore, websearch, generate.
+    - Use 'vectorstore' for questions about uploaded/indexed documents.
+    - Use 'websearch' for current events, recent news, or fast-changing facts.
+    - Use 'generate' for general knowledge or conceptual explanations.
+    Return your decision as JSON with keys: route, reasoning, confidence.
+  expected_output: >
+    A JSON object matching the RouteDecision schema with a single chosen route,
+    a brief reasoning string, and a confidence value between 0 and 1.
+  agent: router
+
+answer_task:
+  description: >
+    Answer the user question: "{question}" using the evidence provided for the
+    selected route. Cite every source. If the evidence does not contain the
+    answer, state that you don't know rather than guessing.
+  expected_output: >
+    A concise, well-structured answer with inline citations (file/page or URL),
+    or an honest statement that the answer is unknown.
+  agent: retriever
+
+grade_task:
+  description: >
+    Evaluate whether the retrieved context answers the question:
+    "{question}". Consider relevance and completeness.
+    Return JSON with keys: is_relevant (bool), score (0-1), reasoning.
+  expected_output: >
+    A JSON object matching the GradeResult schema indicating whether the
+    context is sufficient to answer the question.
+  agent: grader
