@@ -208,4 +208,3 @@ CI runs ruff + pytest on every push/PR (see
 ├── src/agentic_rag/          # application package
 └── tests/                    # offline unit tests
 ```
-
